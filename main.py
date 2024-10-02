@@ -1,11 +1,5 @@
 import pandas as pd
 
-import pandas as pd
-
-dataset = pd.read_csv('./assets/dataset.csv')
-
-import pandas as pd
-
 dataset = pd.read_csv('./assets/dataset.csv')
 
 performance_dummies = pd.get_dummies(dataset['Performance'], prefix='', prefix_sep='')
