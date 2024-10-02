@@ -122,7 +122,7 @@ y_test = test_data.iloc[:, -1]
 
 # Define layer sizes
 input_size = X_train.shape[1]
-hidden_size = 20
+hidden_size = 30
 output_size = 1
 
 # Initialize weights
