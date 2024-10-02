@@ -137,4 +137,4 @@ predictions = evaluate(X_test, weights_input_hidden, weights_hidden_output)
 # Prepare results
 results = pd.DataFrame({'Player': players[split_index:].reset_index(drop=True), 'Predicted Performance': predictions})
 results['Predicted Performance'] = results['Predicted Performance']
-print(results)
+print(results.to_string(index=False))
