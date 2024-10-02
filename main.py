@@ -37,7 +37,15 @@ def relu(x):
 def relu_derivative(x):
     return 1 if x > 0 else 0
 
-# Loss function
+# Sigmoid function (for output layer)
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+def sigmoid_derivative(x):
+    sig = sigmoid(x)
+    return sig * (1 - sig)
+
+# Loss function (MSE)
 def loss_function(y_true, y_pred):
     return 0.5 * (y_true - y_pred) ** 2
 
@@ -51,7 +59,7 @@ def initialize_weights(input_size, hidden_size, output_size):
     
     return weights_input_hidden, weights_hidden_output
 
-# Backpropagation with ReLU
+# Backpropagation with ReLU and Sigmoid
 def backpropagation(X_train, y_train, weights_input_hidden, weights_hidden_output, learning_rate=0.01, epochs=10):
     for epoch in range(epochs):
         total_loss = 0
@@ -61,7 +69,7 @@ def backpropagation(X_train, y_train, weights_input_hidden, weights_hidden_outpu
 
             # Forward pass
             hidden_layer = [relu(sum([input_layer[i] * weights_input_hidden[i][j] for i in range(input_size)])) for j in range(hidden_size)]
-            output_layer = relu(sum([hidden_layer[j] * weights_hidden_output[j][0] for j in range(hidden_size)]))
+            output_layer = sigmoid(sum([hidden_layer[j] * weights_hidden_output[j][0] for j in range(hidden_size)]))
 
             # Loss calculation
             loss = loss_function(target, output_layer)
@@ -69,7 +77,7 @@ def backpropagation(X_train, y_train, weights_input_hidden, weights_hidden_outpu
 
             # Backward pass
             output_error = target - output_layer
-            output_delta = output_error * relu_derivative(output_layer)
+            output_delta = output_error * sigmoid_derivative(output_layer)
 
             hidden_error = [output_delta * weights_hidden_output[j][0] for j in range(hidden_size)]
             hidden_delta = [hidden_error[j] * relu_derivative(hidden_layer[j]) for j in range(hidden_size)]
@@ -92,9 +100,9 @@ def evaluate(X_test, weights_input_hidden, weights_hidden_output):
 
         # Forward pass
         hidden_layer = [relu(sum([input_layer[i] * weights_input_hidden[i][j] for i in range(input_size)])) for j in range(hidden_size)]
-        output_layer = relu(sum([hidden_layer[j] * weights_hidden_output[j][0] for j in range(hidden_size)]))
+        output_layer = sigmoid(sum([hidden_layer[j] * weights_hidden_output[j][0] for j in range(hidden_size)]))
 
-        prediction = 1 if output_layer > 0.5 else 0
+        prediction = output_layer
         predictions.append(prediction)
 
     return predictions
@@ -128,6 +136,5 @@ predictions = evaluate(X_test, weights_input_hidden, weights_hidden_output)
 
 # Prepare results
 results = pd.DataFrame({'Player': players[split_index:].reset_index(drop=True), 'Predicted Performance': predictions})
-results['Predicted Performance'] = results['Predicted Performance'].replace({0: 'Bad', 1: 'Good'})
-
+results['Predicted Performance'] = results['Predicted Performance']
 print(results)
